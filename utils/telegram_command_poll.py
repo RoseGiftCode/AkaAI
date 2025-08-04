@@ -4,15 +4,21 @@ import requests
 import time
 import config
 import fcntl
+import os
+import sys
 from utils.bot_state import is_bot_active
 
-# Prevent multiple pollers running simultaneously (Linux-specific)
-lockfile = open("/tmp/telegram_poll.lock", "w")
+# === LOCKFILE to prevent multiple polling instances ===
+LOCK_PATH = "/tmp/telegram_poll.lock"
+lockfile = open(LOCK_PATH, "w")
+
 try:
-    fcntl.flock(lockfile, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    fcntl.flock(lockfile.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+    lockfile.write(str(os.getpid()))
+    lockfile.flush()
 except IOError:
-    print("Another instance of Telegram polling is already running.")
-    exit(1)
+    print("🚫 Another instance of Telegram polling is already running. Exiting...")
+    sys.exit(0)
 
 # ✅ Thread-safe mutable holder for last update ID
 _last_update_id_holder = {"value": None}
@@ -86,11 +92,9 @@ def check_telegram_commands():
                 cancel_all_orders()
             elif cmd == "/restart":
                 send_msg("♻️ Restarting bot (soft reload)...")
-                import os
                 os.execlp("python", "python", "main.py")
             elif cmd == "/rebootserver":
                 send_msg("🔁 Rebooting server...")
-                import os
                 os.system("reboot")
 
             # 📊 REPORTING
@@ -178,4 +182,4 @@ def check_telegram_commands():
 def telegram_command_loop():
     while True:
         check_telegram_commands()
-        time.sleep(getattr(config, "telegram_poll_delay", 5))  # Default to 5s if not set
+        time.sleep(getattr(config, "telegram_poll_delay", 5))  # Default to 5s
