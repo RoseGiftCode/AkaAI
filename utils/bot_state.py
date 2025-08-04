@@ -1,5 +1,5 @@
 # ✅ Global bot active status toggle
-is_bot_active = {"status": False}
+is_bot_active = {"status": True}
 
 # ✅ Track the last known entry details for Telegram and logging
 last_entry_info = {
