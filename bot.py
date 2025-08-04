@@ -875,7 +875,7 @@ def trade_loop():
 def validate_api_keys():
     try:
         bal = exchange.fetch_balance()
-        notify(f"✅ API OK. USDT: ${bal['free'].get('USDT',0):.2f}")
+        notify(f"✅ API OK.|  USDT: ${bal['free'].get('USDT',0):.2f} | Send /help for all command.")
     except Exception as e:
         notify(f"❌ API error: {e}")
         exit(1)
