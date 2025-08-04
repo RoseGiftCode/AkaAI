@@ -8,6 +8,8 @@ from config import (
 from utils.exchange_utils import get_exchange, fetch_ohlcv_safe
 from utils.indicators import calculate_indicators, evaluate_all_entry_conditions
 from utils.bot_state import last_entry_info, last_exit_info
+import config
+
 
 exchange = get_exchange()
 
