@@ -26,6 +26,7 @@ volatility_filters = {
     'min_volume': 500000,
     'min_change_percent': 1,
     'max_price': 5
+    'scan_interval': 60  # seconds
 }
 
 # === STOP LOSS / TRAILING ===
