@@ -1,5 +1,3 @@
-# ✅ utils/telegram_command_poll.py
-
 import requests
 import time
 import config
@@ -20,7 +18,6 @@ except IOError:
     print("🚫 Another instance of Telegram polling is already running. Exiting...")
     sys.exit(0)
 
-# ✅ Thread-safe mutable holder for last update ID
 _last_update_id_holder = {"value": None}
 
 def send_msg(msg):
@@ -74,7 +71,6 @@ def check_telegram_commands():
             cmd = text.strip().lower()
             parts = cmd.split()
 
-            # 🔧 BOT CONTROLS
             if cmd == "/start":
                 is_bot_active["status"] = True
                 send_msg("✅ Bot STARTED. GET RICH 💵")
@@ -82,8 +78,8 @@ def check_telegram_commands():
                 is_bot_active["status"] = False
                 send_msg("⛔ Bot STOPPED.")
             elif cmd == "/status":
-                status_msg = "🟢 Bot is RUNNING. GET RICH 💵" if is_bot_active["status"] else "🔴 Bot is STOPPED."
-                send_msg(status_msg)
+                msg = "🟢 Bot is RUNNING. GET RICH 💵" if is_bot_active["status"] else "🔴 Bot is STOPPED."
+                send_msg(msg)
             elif cmd == "/panicclose":
                 send_msg("⚠️ Closing all open positions...")
                 panic_close_all_positions()
@@ -97,7 +93,6 @@ def check_telegram_commands():
                 send_msg("🔁 Rebooting server...")
                 os.system("reboot")
 
-            # 📊 REPORTING
             elif cmd in ["/balance", "/b"]:
                 send_msg(show_balance())
             elif cmd == "/portfolio":
@@ -123,7 +118,6 @@ def check_telegram_commands():
             elif cmd == "/lastclose":
                 send_msg(show_last_close())
 
-            # 🛠️ MANUAL TRADING
             elif cmd.startswith("/buy") and len(parts) == 3:
                 try:
                     amount = float(parts[2])
@@ -141,41 +135,70 @@ def check_telegram_commands():
             elif cmd == "/scanner":
                 send_msg(get_scanner_results())
 
-            # 📘 HELP
+            # ✅ /improve <symbol>
+            elif cmd.startswith("/improve") and len(parts) == 2:
+                try:
+                    from utils.indicators import evaluate_all_entry_conditions, calculate_indicators, get_sma
+                    from utils.dataset import fetch_candles
+
+                    symbol = parts[1].upper()
+                    df15 = fetch_candles(symbol, interval="15m")
+                    df1h = fetch_candles(symbol, interval="1h")
+
+                    if df15 is None or df1h is None:
+                        send_msg(f"⚠️ Unable to fetch data for {symbol}.")
+                        continue
+
+                    config_obj = type('Config', (), {
+                        'min_entry_signals_required': config.min_entry_signals_required,
+                        'volume_lookback': config.volume_lookback
+                    })()
+
+                    df15 = calculate_indicators(df15)
+                    df1h['sma'] = get_sma(df1h['close'], 50)
+
+                    passed, strategy, message = evaluate_all_entry_conditions(df15, df1h, config_obj)
+
+                    if passed:
+                        send_msg(f"✅ {symbol} PASSED: {strategy}\n{message}")
+                    else:
+                        send_msg(f"❌ {symbol} NOT recommended.\n{message}")
+                except Exception as e:
+                    send_msg(f"⚠️ Error improving {symbol}: {e}")
+
             elif cmd == "/help":
-                help_text = """✅Available Commands:📘
-/start - Activate the bot  
-/stop - Stop the bot  
-/status - Show bot running/stopped status  
+                send_msg(\"\"\"✅Available Commands:
+/start - Start the bot
+/stop - Stop the bot
+/status - Bot status
+/improve <SYMBOL> - Evaluate signal strength
 
-/balance - Show USDT balance  
-/portfolio - List active portfolio holdings  
-/pnl - Show profit and loss  
-/fees - Display accumulated fees  
-/maxdrawdown - Max % drawdown from peak  
+/balance - USDT balance
+/portfolio - Current portfolio
+/pnl - Profit & Loss
+/fees - Total fees
+/maxdrawdown - Max drawdown
 
-/openpositions - List open positions  
-/position <SYMBOL> - Show position details  
-/orders - Show open orders  
-/orderbook <SYMBOL> - Snapshot of the orderbook  
-/scanner - Show market scanner signals  
-/recommend <SYMBOL> - Recommend if this symbol is trade-worthy  
-/lastentry - Show details of last entry  
-/lastclose - Show details of last close  
+/openpositions
+/position <SYMBOL>
+/orders
+/orderbook <SYMBOL>
+/scanner
+/recommend <SYMBOL>
+/lastentry
+/lastclose
 
-/buy <SYMBOL> <AMOUNT> - Execute a manual buy  
-/sell <SYMBOL> - Execute a manual sell  
-/cancel <SYMBOL> - Cancel open orders for a symbol  
-/takeprofit <SYMBOL> - Manually trigger take profit  
-/stoploss <SYMBOL> - Manually trigger stop loss  
+/buy <SYMBOL> <AMOUNT>
+/sell <SYMBOL>
+/cancel <SYMBOL>
+/takeprofit <SYMBOL>
+/stoploss <SYMBOL>
 
-/panicclose - Emergency close all open positions  
-/cancelall - Cancel all open orders  
-/restart - Soft restart the bot  
-/rebootserver - Reboot the server (if allowed)
-"""
-                send_msg(help_text)
-
+/panicclose
+/cancelall
+/restart
+/rebootserver
+\"\"\")
     except Exception as e:
         print("Telegram command check failed:", e)
 
