@@ -71,7 +71,7 @@ def check_telegram_commands():
             # 🔧 BOT CONTROLS
             if cmd == "/start":
                 is_bot_active["status"] = True
-                send_msg("✅ Bot STARTED. Send /help for all command")
+                send_msg("✅ Bot STARTED. GET RICH 💵")
             elif cmd == "/stop":
                 is_bot_active["status"] = False
                 send_msg("⛔ Bot STOPPED.")
