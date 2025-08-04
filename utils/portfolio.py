@@ -85,7 +85,7 @@ def recommend_symbol(pair):
         df15 = calculate_indicators(df15)
         df1h = calculate_indicators(df1h)
 
-        passed, strategy, details = evaluate_all_entry_conditions(df15, df1h)
+        passed, strategy, details = evaluate_all_entry_conditions(df15, df1h, config)
         if passed:
             return f"✅ {pair} is a recommended BUY.\nStrategy: {strategy}\nDetails: {details}"
         else:
@@ -108,7 +108,7 @@ def get_scanner_results():
             df15 = calculate_indicators(df15)
             df1h = calculate_indicators(df1h)
 
-            passed, strategy, details = evaluate_all_entry_conditions(df15, df1h)
+            passed, strategy, details = evaluate_all_entry_conditions(df15, df1h, config)
             if passed:
                 results.append(f"✅ {sym} - {strategy} | {details}")
         except Exception as e:
