@@ -139,15 +139,37 @@ def check_telegram_commands():
 
             # 📘 HELP
             elif cmd == "/help":
-                help_text = """📘 Available Commands:
-/start, /stop, /status
-/panicclose, /cancelall, /restart
-/balance, /portfolio, /pnl, /fees, /maxdrawdown
-/openpositions, /position <symbol>, /orders
-/orderbook <symbol>, /scanner, /recommend <symbol>
-/lastentry, /lastclose
-/buy <symbol> <amount>, /sell <symbol>, /cancel <symbol>
-/takeprofit <symbol>, /stoploss <symbol>"""
+                help_text = """✅📘 Available Commands:
+/start - Activate the bot  
+/stop - Stop the bot  
+/status - Show bot running/stopped status  
+
+/balance - Show USDT balance  
+/portfolio - List active portfolio holdings  
+/pnl - Show profit and loss  
+/fees - Display accumulated fees  
+/maxdrawdown - Max % drawdown from peak  
+
+/openpositions - List open positions  
+/position <SYMBOL> - Show position details  
+/orders - Show open orders  
+/orderbook <SYMBOL> - Snapshot of the orderbook  
+/scanner - Show market scanner signals  
+/recommend <SYMBOL> - Recommend if this symbol is trade-worthy  
+/lastentry - Show details of last entry  
+/lastclose - Show details of last close  
+
+/buy <SYMBOL> <AMOUNT> - Execute a manual buy  
+/sell <SYMBOL> - Execute a manual sell  
+/cancel <SYMBOL> - Cancel open orders for a symbol  
+/takeprofit <SYMBOL> - Manually trigger take profit  
+/stoploss <SYMBOL> - Manually trigger stop loss  
+
+/panicclose - Emergency close all open positions  
+/cancelall - Cancel all open orders  
+/restart - Soft restart the bot  
+/rebootserver - Reboot the server (if allowed)
+"""
                 send_msg(help_text)
 
     except Exception as e:
