@@ -40,6 +40,7 @@ from utils.bot_state import is_bot_active
 import importlib
 
 import threading
+from utils.scanner import scanner_loop
 
 
 # Start Telegram command loop
@@ -910,6 +911,7 @@ def main():
 
     threading.Thread(target=hard_stop_loss_loop, daemon=True).start()
     threading.Thread(target=telegram_command_loop, daemon=True).start()
+    threading.Thread(target=scanner_loop, daemon=True).start()
     
     trade_loop()
 
