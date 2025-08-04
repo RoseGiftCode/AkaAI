@@ -2,6 +2,8 @@
 import pandas as pd
 import numpy as np
 import ta  # pip install ta
+import config
+
 
 def calculate_zigzag(prices, deviation=5):
     zigzag_points = []
