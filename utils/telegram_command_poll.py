@@ -76,7 +76,7 @@ def check_telegram_commands():
                 is_bot_active["status"] = False
                 send_msg("⛔ Bot STOPPED.")
             elif cmd == "/status":
-                status_msg = "🟢 Bot is RUNNING." if is_bot_active["status"] else "🔴 Bot is STOPPED."
+                status_msg = "🟢 Bot is RUNNING.GET RICH 💵" if is_bot_active["status"] else "🔴 Bot is STOPPED."
                 send_msg(status_msg)
             elif cmd == "/panicclose":
                 send_msg("⚠️ Closing all open positions...")
