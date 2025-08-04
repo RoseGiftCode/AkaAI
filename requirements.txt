@@ -1,0 +1,6 @@
+ccxt>=4.4.96
+pandas
+python-telegram-bot
+numpy
+tabulate
+ta
