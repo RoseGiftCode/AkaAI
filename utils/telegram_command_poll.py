@@ -167,7 +167,7 @@ def check_telegram_commands():
                     send_msg(f"⚠️ Error improving {symbol}: {e}")
 
             elif cmd == "/help":
-                send_msg(\"\"\"✅Available Commands:
+                send_msg("""✅Available Commands:
 /start - Start the bot
 /stop - Stop the bot
 /status - Bot status
@@ -198,7 +198,7 @@ def check_telegram_commands():
 /cancelall
 /restart
 /rebootserver
-\"\"\")
+""")
     except Exception as e:
         print("Telegram command check failed:", e)
 
